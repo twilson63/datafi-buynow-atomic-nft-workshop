@@ -5,10 +5,7 @@
   const arweave = Arweave.init({});
   const CONTRACT = window.location.pathname.replace(/\//g, "");
 
-  const contract = warp.WarpWebFactory.memCachedBased(arweave)
-    .useArweaveGateway()
-    .build()
-    .contract(CONTRACT);
+  const contract = warp.WarpWebFactory.forTesting(arweave).contract(CONTRACT);
 
   function visits() {
     return contract.viewState({ function: "visits" }).then((res) => res.result);

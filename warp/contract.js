@@ -7,6 +7,19 @@ export function handle(state, action) {
   return ContractError('function not defined!')
 }
 
+function price(state, action) {
+  return { result: state.price }
+}
+
+function setPrice(state, action) {
+  const { input, caller } = action
+
+  if (action.input.price) {
+    state.price = action.input.price
+  }
+  return { state }
+}
+
 function visits(state, action) {
   return { result: state.visits.length }
 }
