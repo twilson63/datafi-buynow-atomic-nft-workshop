@@ -1,4 +1,4 @@
-const functions = { balance, transfer, visits, visit }
+const functions = { balance, transfer, visits, visit, price, setPrice }
 
 export function handle(state, action) {
   if (Object.keys(functions).includes(action.input.function)) {
@@ -14,10 +14,17 @@ function price(state, action) {
 function setPrice(state, action) {
   const { input, caller } = action
 
-  if (action.input.price) {
-    state.price = action.input.price
+  if (state.balances.includes(caller) && state.balances[caller] === 1) {
+    ContractAssert(input.price, 'Price is required!')
+    ContractAssert(input.sellType, 'SellType required either buynow or auction')
+    ContractAssert(['buynow', 'auction'].includes(input.sellType), 'selltype must be buynow or auction')
+    if (input.price) {
+      state.price = input.price
+      state.sellType = input.sellType
+    }
+    return { state }
   }
-  return { state }
+  throw ContractError('Only current owner can change price!')
 }
 
 function visits(state, action) {
@@ -67,5 +74,13 @@ function transfer(state, action) {
   balances[target] += qty
   state.balances = balances
   return { state }
+}
+
+function purchaseRequest(state, action) {
+  const tx = SmartWeave.transaction
+  const { input, caller } = action
+  const { bids } = state
+
+
 }
 
